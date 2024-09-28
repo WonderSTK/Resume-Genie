@@ -36,7 +36,8 @@ const ResumeCard = ({
 }) => {
   if (!resume) {
     return (
-      <div className="!bg-slate-200/30 relative aspect-[1/1.2] rounded-lg shadow-lg flex flex-col hover:scale-105 transition-all skeleton">
+       //! The fallback skeleton now has a cleaner loading state with animate-pulse for smooth loading feedback.
+      <div className="bg-slate-200/30 relative aspect-[1/1.2] rounded-lg shadow-lg flex flex-col animate-pulse">
         <div className="flex-1"></div>
         <div className="border-0 p-3 flex justify-between bg-white/40 rounded-b-lg">
           ‎{" "}
@@ -63,7 +64,7 @@ const ResumeCard = ({
     if (result.success) {
       toast({
         title: "Information saved.",
-        description: "Resume deleted successfully.",
+        description: "Resume was successfully deleted.",
         className: "bg-white",
       });
 
@@ -79,7 +80,8 @@ const ResumeCard = ({
   };
 
   return (
-    <div className="relative aspect-[1/1.2] flex flex-col hover:scale-105 transition-all">
+     //! Changed the hover:scale-105 with tranform duration-300 easin-in-out to make scaling effect smoother
+    <div className="relative aspect-[1/1.2] flex flex-col hover:scale-105 transition-transform duration-300 ease-in-out rounded-lg shadow-lg">
       <Link
         href={"/my-resume/" + myResume.resumeId + "/view"}
         className="flex-grow"
@@ -91,19 +93,26 @@ const ResumeCard = ({
           }}
         >
           <div className="flex size-full items-center justify-center">
-            <img src="/img/blank-cv.png" width={80} height={80} />
+            <img src="/img/blank-cv.png" width={80} height={80} 
+            className="object-contain"
+            alt="Resume Preview"
+            />
           </div>
         </div>
       </Link>
 
-      <div className="border p-3 flex justify-between bg-white rounded-b-lg shadow-lg">
-        <h2 className="text-sm font-medium text-slate-700 mr-4 block whitespace-nowrap overflow-hidden text-ellipsis">
+      <div className="border p-3 flex justify-between items-center bg-white rounded-b-lg shadow-md">
+         {/* resume title is truncated if it exceeds the available width,make sure the layout dont break for long title */}
+       
+        <h2 className="text-sm font-medium text-slate-700 truncate w-3/">
           {myResume.title}
         </h2>
 
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <MoreVertical className="h-4 w-4 cursor-pointer" color="#000" />
+            {/* Hover:text-slate-900 */}
+            <MoreVertical className="h-5 w-5 cursor-pointer text-slate-700 hover:text-slate-900"/>
+            
           </DropdownMenuTrigger>
 
           <DropdownMenuContent>
