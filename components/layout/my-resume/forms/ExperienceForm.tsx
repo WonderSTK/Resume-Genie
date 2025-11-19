@@ -12,7 +12,7 @@ import React, { useRef, useState } from "react";
 
 const ExperienceForm = ({ params }: { params: { id: string } }) => {
   const listRef = useRef<HTMLDivElement>(null);
-  const { formData, handleInputChange } = useFormContext();
+  const { formData, handleInputChange, handleRichTextChange } = useFormContext();
   const [isLoading, setIsLoading] = useState(false);
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [aiGeneratedSummaryList, setAiGeneratedSummaryList] = useState(
@@ -256,10 +256,14 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
                     </Button>
                   </div>
                   <RichTextEditor
+                    name="workSummary"
                     defaultValue={item?.workSummary || ""}
-                    onRichTextEditorChange={(value: string) =>
-                      handleChange(index, value)
-                    }
+                    onContentChange={(name: string, value: string) => {
+                      const newEntries = experienceList.slice();
+                      newEntries[index][name] = value;
+                      setExperienceList(newEntries);
+                      handleRichTextChange("experience", newEntries);
+                    }}
                   />
                 </div>
               </div>

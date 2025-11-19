@@ -1,10 +1,20 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useCallback } from "react";
 import { createContext, useState, useContext } from "react";
 import { fetchResume } from "../actions/resume.actions";
 
 const FormContext = createContext({} as any);
+
+const debounce = (func: Function, delay: number) => {
+  let timer: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+};
 
 export const FormProvider = ({
   params,
@@ -26,18 +36,36 @@ export const FormProvider = ({
     };
 
     loadResumeData();
-  }, []);
+  }, [params.id]);
+
+  const debouncedSetFormData = useCallback(
+    debounce((data: any) => {
+      setFormData(data);
+    }, 500),
+    []
+  );
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
-    setFormData((prevData: any) => ({
-      ...prevData,
+    const newFormData = {
+      ...formData,
       [name]: value,
-    }));
+    };
+    debouncedSetFormData(newFormData);
+  };
+
+  const handleRichTextChange = (name: string, value: string) => {
+    const newFormData = {
+      ...formData,
+      [name]: value,
+    };
+    debouncedSetFormData(newFormData);
   };
 
   return (
-    <FormContext.Provider value={{ formData, handleInputChange }}>
+    <FormContext.Provider
+      value={{ formData, handleInputChange, handleRichTextChange, setFormData }}
+    >
       {children}
     </FormContext.Provider>
   );

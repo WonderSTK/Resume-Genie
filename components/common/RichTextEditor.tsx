@@ -5,11 +5,13 @@ import QuillEditor from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const RichTextEditor = ({
-  onRichTextEditorChange,
+  onContentChange,
   defaultValue,
+  name,
 }: {
-  onRichTextEditorChange: (value: any) => void;
+  onContentChange: (name: string, value: string) => void;
   defaultValue: string;
+  name: string;
 }) => {
   const [value, setValue] = useState(defaultValue);
 
@@ -43,7 +45,7 @@ const RichTextEditor = ({
       modules={modules}
       onChange={(e: any) => {
         setValue(e);
-        onRichTextEditorChange({ target: { name: "workSummary", value: e } });
+        onContentChange(name, e);
       }}
       className="mt-2"
       style={{ borderColor: "#E5E7EB" }}
