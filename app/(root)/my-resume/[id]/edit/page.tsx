@@ -5,6 +5,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { checkResumeOwnership } from "@/lib/actions/resume.actions";
 import { redirect } from "next/navigation";
 import ResumeEditor from "@/components/layout/my-resume/ResumeEditor";
+import { FormProvider } from "@/lib/context/FormProvider";
 
 const EditResume = async ({ params }: { params: { id: string } }) => {
   const user = await currentUser();
@@ -23,7 +24,9 @@ const EditResume = async ({ params }: { params: { id: string } }) => {
           Please provide the necessary information for your resume.
         </p>
       </div>
-      <ResumeEditor params={params} userId={user?.id} />
+      <FormProvider params={params}>
+        <ResumeEditor params={params} userId={user?.id} />
+      </FormProvider>
     </PageWrapper>
   );
 };

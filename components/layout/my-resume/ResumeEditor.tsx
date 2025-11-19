@@ -17,14 +17,12 @@ const ResumeEditor = ({
   }
 
   return (
-    <FormProvider params={params}>
-      <div className="p-10 max-sm:p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 justify-center items-start pb-16 max-sm:pb-8">
-          <ResumeEditForm params={params} userId={userId} />
-          <LivePdfPreview />
-        </div>
+    <div className="p-10 max-sm:p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 justify-center items-start pb-16 max-sm:pb-8">
+        <ResumeEditForm params={params} userId={userId} />
+        <LivePdfPreview />
       </div>
-    </FormProvider>
+    </div>
   );
 };
 
