@@ -9,8 +9,8 @@ import ResumePreview from "@/components/layout/my-resume/ResumePreview";
 import { usePathname } from "next/navigation";
 import PageWrapper from "@/components/common/PageWrapper";
 import { DownloadIcon, Share2Icon } from "lucide-react";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import ResumePdfDocument from "./my-resume/pdf/ResumePdfDocument";
+
+import DownloadResume from "./my-resume/DownloadResume";
 
 const FinalResumeView = ({
   params,
@@ -20,7 +20,6 @@ const FinalResumeView = ({
   isOwnerView: boolean;
 }) => {
   const path = usePathname();
-  const { formData } = useFormContext();
 
   return (
     <PageWrapper>
@@ -58,27 +57,12 @@ const FinalResumeView = ({
               </>
             )}
             <div className="flex max-sm:flex-col justify-center gap-8 my-10">
-              <PDFDownloadLink
-                document={<ResumePdfDocument formData={formData} />}
-                fileName={`${formData?.firstName || "resume"}_${
-                  formData?.lastName || ""
-                }.pdf`}
-              >
-                {({ loading }) => (
-                  <Button
-                    className="flex px-12 py-6 gap-2 rounded-full bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-700/30 text-white"
-                    disabled={loading}
-                  >
-                    <DownloadIcon className="size-6" />{" "}
-                    {loading ? "Loading document..." : "Download"}
-                  </Button>
-                )}
-              </PDFDownloadLink>
+              <DownloadResume />
               <RWebShare
                 data={{
                   text: "Hello everyone, check out my resume by clicking the link!",
                   url: `${process.env.BASE_URL}/${path}`,
-                  title: `${formData?.firstName} ${formData?.lastName}'s Resume`,
+                  title: `Resume`,
                 }}
                 onClick={() => console.log("Shared successfully!")}
               >
