@@ -13,12 +13,19 @@ const PersonalDetailsForm = ({ params }: { params: { id: string } }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const onSave = async (e: any) => {
+  const onSave = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setIsLoading(true);
 
-    const updates = {
+    const updates: {
+      firstName?: string;
+      lastName?: string;
+      jobTitle?: string;
+      address?: string;
+      phone?: string;
+      email?: string;
+    } = {
       firstName: formData?.firstName,
       lastName: formData?.lastName,
       jobTitle: formData?.jobTitle,

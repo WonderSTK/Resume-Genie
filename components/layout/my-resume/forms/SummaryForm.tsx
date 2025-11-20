@@ -9,18 +9,25 @@ import { useFormContext } from "@/lib/context/FormProvider";
 import { Brain, Loader2 } from "lucide-react";
 import React, { useRef, useState } from "react";
 
+type AiGeneratedSummary = {
+  activity_level?: string;
+  experience_level?: string;
+  description?: string;
+  summary?: string;
+};
+
 const SummaryForm = ({ params }: { params: { id: string } }) => {
   const listRef = useRef<HTMLDivElement>(null);
   const { formData, handleInputChange } = useFormContext();
   const [summary, setSummary] = useState(formData?.summary || "");
   const [isLoading, setIsLoading] = useState(false);
   const [isAiLoading, setIsAiLoading] = useState(false);
-  const [aiGeneratedSummaryList, setAiGeneratedSummaryList] = useState(
-    [] as any
-  );
+  const [aiGeneratedSummaryList, setAiGeneratedSummaryList] = useState<
+    AiGeneratedSummary[]
+  >([]);
   const { toast } = useToast();
 
-  const handleSummaryChange = (e: any) => {
+  const handleSummaryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newSummary = e.target.value;
     setSummary(newSummary);
 
@@ -35,7 +42,7 @@ const SummaryForm = ({ params }: { params: { id: string } }) => {
   const generateSummaryFromAI = async () => {
     setIsAiLoading(true);
 
-    const result = await generateSummary(formData?.jobTitle);
+    const result = await generateSummary(formData?.jobTitle || "");
 
     setAiGeneratedSummaryList(result);
 
@@ -49,12 +56,12 @@ const SummaryForm = ({ params }: { params: { id: string } }) => {
     }, 100);
   };
 
-  const onSave = async (e: any) => {
+  const onSave = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setIsLoading(true);
 
-    const updates = {
+    const updates: { summary?: string } = {
       summary: formData?.summary,
     };
 
@@ -117,7 +124,6 @@ const SummaryForm = ({ params }: { params: { id: string } }) => {
             required
             value={summary}
             onChange={handleSummaryChange}
-            defaultValue={formData?.summary || ""}
           />
           <div className="flex justify-end">
             <Button
@@ -145,8 +151,11 @@ const SummaryForm = ({ params }: { params: { id: string } }) => {
               key={index}
               onClick={() =>
                 handleSummaryChange({
-                  target: { name: "summary", value: item?.summary },
-                })
+                  target: {
+                    name: "summary",
+                    value: item?.summary,
+                  },
+                } as React.ChangeEvent<HTMLTextAreaElement>)
               }
               className={`p-5 shadow-lg my-4 rounded-lg border-t-2 ${
                 isAiLoading ? "cursor-not-allowed" : "cursor-pointer"

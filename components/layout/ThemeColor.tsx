@@ -19,7 +19,7 @@ const ThemeColor = ({ params }: { params: { id: string } }) => {
   const [selectedColor, setSelectedColor] = useState(themeColors[0]);
 
   useEffect(() => {
-    setSelectedColor(formData.themeColor);
+    setSelectedColor(formData.themeColor || "");
   }, [formData.themeColor]);
 
   const onColorSelect = async (color: any) => {

@@ -7,18 +7,22 @@ import { useToast } from "@/components/ui/use-toast";
 import { generateExperienceDescription } from "@/lib/actions/gemini.actions";
 import { addExperienceToResume } from "@/lib/actions/resume.actions";
 import { useFormContext } from "@/lib/context/FormProvider";
+import { FormData } from "@/lib/context/FormProvider";
 import { Brain, Loader2, Minus, Plus } from "lucide-react";
 import React, { useRef, useState } from "react";
 
+type Experience = FormData["experience"][number];
+
 const ExperienceForm = ({ params }: { params: { id: string } }) => {
   const listRef = useRef<HTMLDivElement>(null);
-  const { formData, handleInputChange, handleRichTextChange } = useFormContext();
+  const { formData, handleInputChange, handleRichTextChange } =
+    useFormContext();
   const [isLoading, setIsLoading] = useState(false);
   const [isAiLoading, setIsAiLoading] = useState(false);
-  const [aiGeneratedSummaryList, setAiGeneratedSummaryList] = useState(
-    [] as any
+  const [aiGeneratedSummaryList, setAiGeneratedSummaryList] = useState<any[]>(
+    []
   );
-  const [experienceList, setExperienceList] = useState(
+  const [experienceList, setExperienceList] = useState<Experience[]>(
     formData?.experience.length > 0
       ? formData?.experience
       : [
@@ -38,10 +42,16 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
   );
   const { toast } = useToast();
 
-  const handleChange = (index: number, event: any) => {
-    const newEntries = experienceList.slice();
+  const handleChange = (
+    index: number,
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const newEntries = [...experienceList];
     const { name, value } = event.target;
-    newEntries[index][name] = value;
+    newEntries[index] = {
+      ...newEntries[index],
+      [name as keyof Experience]: value,
+    };
     setExperienceList(newEntries);
 
     handleInputChange({
@@ -129,7 +139,7 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
     }, 100);
   };
 
-  const onSave = async (e: any) => {
+  const onSave = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setIsLoading(true);
@@ -259,10 +269,13 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
                     name="workSummary"
                     defaultValue={item?.workSummary || ""}
                     onContentChange={(name: string, value: string) => {
-                      const newEntries = experienceList.slice();
-                      newEntries[index][name] = value;
+                      const newEntries = [...experienceList];
+                      newEntries[index] = {
+                        ...newEntries[index],
+                        workSummary: value,
+                      };
                       setExperienceList(newEntries);
-                      handleRichTextChange("experience", newEntries);
+                      handleRichTextChange("experience", newEntries as any);
                     }}
                   />
                 </div>
@@ -310,9 +323,15 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
             <div
               key={index}
               onClick={() =>
-                handleChange(currentAiIndex, {
-                  target: { name: "workSummary", value: item?.description },
-                })
+                handleChange(
+                  currentAiIndex,
+                  {
+                    target: {
+                      name: "workSummary",
+                      value: item?.description,
+                    },
+                  } as React.ChangeEvent<HTMLTextAreaElement>
+                )
               }
               className={`p-5 shadow-lg my-4 rounded-lg border-t-2 ${
                 isAiLoading ? "cursor-not-allowed" : "cursor-pointer"

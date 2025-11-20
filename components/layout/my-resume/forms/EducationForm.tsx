@@ -7,18 +7,21 @@ import { useToast } from "@/components/ui/use-toast";
 import { generateEducationDescription } from "@/lib/actions/gemini.actions";
 import { addEducationToResume } from "@/lib/actions/resume.actions";
 import { useFormContext } from "@/lib/context/FormProvider";
+import { FormData } from "@/lib/context/FormProvider";
 import { Brain, Loader2, Minus, Plus } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+
+type Education = FormData["education"][number];
 
 const EducationForm = ({ params }: { params: { id: string } }) => {
   const listRef = useRef<HTMLDivElement>(null);
   const { formData, handleInputChange } = useFormContext();
   const [isLoading, setIsLoading] = useState(false);
   const [isAiLoading, setIsAiLoading] = useState(false);
-  const [aiGeneratedDescriptionList, setAiGeneratedDescriptionList] = useState(
-    [] as any
-  );
-  const [educationList, setEducationList] = useState(
+  const [aiGeneratedDescriptionList, setAiGeneratedDescriptionList] = useState<
+    any[]
+  >([]);
+  const [educationList, setEducationList] = useState<Education[]>(
     formData?.education.length > 0
       ? formData?.education
       : [
@@ -46,10 +49,16 @@ const EducationForm = ({ params }: { params: { id: string } }) => {
     });
   }, [educationList]);
 
-  const handleChange = (event: any, index: number) => {
-    const newEntries = educationList.slice();
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    index: number
+  ) => {
+    const newEntries = [...educationList];
     const { name, value } = event.target;
-    newEntries[index][name] = value;
+    newEntries[index] = {
+      ...newEntries[index],
+      [name as keyof Education]: value,
+    };
     setEducationList(newEntries);
 
     handleInputChange({
@@ -305,8 +314,11 @@ const EducationForm = ({ params }: { params: { id: string } }) => {
               onClick={() =>
                 handleChange(
                   {
-                    target: { name: "description", value: item?.description },
-                  },
+                    target: {
+                      name: "description",
+                      value: item?.description,
+                    },
+                  } as React.ChangeEvent<HTMLTextAreaElement>,
                   currentAiIndex
                 )
               }

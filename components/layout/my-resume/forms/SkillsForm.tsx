@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useFormContext } from "@/lib/context/FormProvider";
+import { useFormContext, FormData } from "@/lib/context/FormProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Rating } from "@smastrom/react-rating";
@@ -10,9 +10,11 @@ import "@smastrom/react-rating/style.css";
 import { addSkillToResume, updateResume } from "@/lib/actions/resume.actions";
 import { useToast } from "@/components/ui/use-toast";
 
+type Skill = FormData["skills"][number];
+
 const SkillsForm = ({ params }: { params: { id: string } }) => {
   const { formData, handleInputChange } = useFormContext();
-  const [skillsList, setSkillsList] = useState(
+  const [skillsList, setSkillsList] = useState<Skill[]>(
     formData.skills.length > 0
       ? formData.skills
       : [
@@ -25,9 +27,16 @@ const SkillsForm = ({ params }: { params: { id: string } }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleChange = (index: number, name: string, value: any) => {
+  const handleChange = (
+    index: number,
+    name: keyof Skill,
+    value: string | number
+  ) => {
     const newSkillsList = [...skillsList];
-    newSkillsList[index][name] = value;
+    newSkillsList[index] = {
+      ...newSkillsList[index],
+      [name]: value,
+    };
     setSkillsList(newSkillsList);
 
     handleInputChange({
