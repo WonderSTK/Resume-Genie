@@ -15,7 +15,7 @@ type Experience = FormData["experience"][number];
 
 const ExperienceForm = ({ params }: { params: { id: string } }) => {
   const listRef = useRef<HTMLDivElement>(null);
-  const { formData, handleInputChange, handleRichTextChange } =
+  const { formData, handleInputChange, handleRichTextChange, setFormData } =
     useFormContext();
   const [isLoading, setIsLoading] = useState(false);
   const [isAiLoading, setIsAiLoading] = useState(false);
@@ -54,12 +54,7 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
     };
     setExperienceList(newEntries);
 
-    handleInputChange({
-      target: {
-        name: "experience",
-        value: newEntries,
-      },
-    });
+    setFormData({ ...formData, experience: newEntries });
   };
 
   const AddNewExperience = () => {
@@ -77,12 +72,7 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
     ];
     setExperienceList(newEntries);
 
-    handleInputChange({
-      target: {
-        name: "experience",
-        value: newEntries,
-      },
-    });
+    setFormData({ ...formData, experience: newEntries });
   };
 
   const RemoveExperience = () => {
@@ -93,12 +83,7 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
       setCurrentAiIndex(newEntries.length - 1);
     }
 
-    handleInputChange({
-      target: {
-        name: "experience",
-        value: newEntries,
-      },
-    });
+    setFormData({ ...formData, experience: newEntries });
   };
 
   const generateExperienceDescriptionFromAI = async (index: number) => {
@@ -275,7 +260,7 @@ const ExperienceForm = ({ params }: { params: { id: string } }) => {
                         workSummary: value,
                       };
                       setExperienceList(newEntries);
-                      handleRichTextChange("experience", newEntries as any);
+                      setFormData({ ...formData, experience: newEntries });
                     }}
                   />
                 </div>

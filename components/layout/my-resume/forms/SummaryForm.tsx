@@ -18,7 +18,7 @@ type AiGeneratedSummary = {
 
 const SummaryForm = ({ params }: { params: { id: string } }) => {
   const listRef = useRef<HTMLDivElement>(null);
-  const { formData, handleInputChange } = useFormContext();
+  const { formData, handleInputChange, setFormData } = useFormContext();
   const [summary, setSummary] = useState(formData?.summary || "");
   const [isLoading, setIsLoading] = useState(false);
   const [isAiLoading, setIsAiLoading] = useState(false);
@@ -31,12 +31,7 @@ const SummaryForm = ({ params }: { params: { id: string } }) => {
     const newSummary = e.target.value;
     setSummary(newSummary);
 
-    handleInputChange({
-      target: {
-        name: "summary",
-        value: newSummary,
-      },
-    });
+    setFormData({ ...formData, summary: newSummary });
   };
 
   const generateSummaryFromAI = async () => {

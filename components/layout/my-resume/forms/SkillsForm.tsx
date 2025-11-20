@@ -13,7 +13,7 @@ import { useToast } from "@/components/ui/use-toast";
 type Skill = FormData["skills"][number];
 
 const SkillsForm = ({ params }: { params: { id: string } }) => {
-  const { formData, handleInputChange } = useFormContext();
+  const { formData, handleInputChange, setFormData } = useFormContext();
   const [skillsList, setSkillsList] = useState<Skill[]>(
     formData.skills.length > 0
       ? formData.skills
@@ -39,12 +39,7 @@ const SkillsForm = ({ params }: { params: { id: string } }) => {
     };
     setSkillsList(newSkillsList);
 
-    handleInputChange({
-      target: {
-        name: "skills",
-        value: newSkillsList,
-      },
-    });
+    setFormData({ ...formData, skills: newSkillsList });
   };
 
   const AddNewSkills = () => {
@@ -57,27 +52,17 @@ const SkillsForm = ({ params }: { params: { id: string } }) => {
     ];
     setSkillsList(newSkillsList);
 
-    handleInputChange({
-      target: {
-        name: "skills",
-        value: newSkillsList,
-      },
-    });
+    setFormData({ ...formData, skills: newSkillsList });
   };
 
   const RemoveSkills = () => {
     const newSkillsList = skillsList.slice(0, -1);
     setSkillsList(newSkillsList);
 
-    handleInputChange({
-      target: {
-        name: "skills",
-        value: newSkillsList,
-      },
-    });
+    setFormData({ ...formData, skills: newSkillsList });
   };
 
-  const onSave = async (e: any) => {
+  const onSave = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setIsLoading(true);

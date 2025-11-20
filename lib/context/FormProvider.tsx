@@ -43,12 +43,16 @@ export interface FormData {
   themeColor?: string;
 }
 
-const FormContext = createContext({} as {
-  formData: FormData;
-  handleInputChange: (e: any) => void;
-  handleRichTextChange: (name: string, value: string) => void;
-  setFormData: React.Dispatch<React.SetStateAction<FormData>>;
-});
+const FormContext = createContext(
+  {} as {
+    formData: FormData;
+    handleInputChange: (
+      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => void;
+    handleRichTextChange: (name: string, value: string) => void;
+    setFormData: React.Dispatch<React.SetStateAction<FormData>>;
+  }
+);
 
 const debounce = (func: Function, delay: number) => {
   let timer: NodeJS.Timeout;
@@ -87,13 +91,15 @@ export const FormProvider = ({
   }, [params.id]);
 
   const debouncedSetFormData = useCallback(
-    debounce((data: any) => {
-      setFormData(data);
+    debounce((data: Partial<FormData>) => {
+      setFormData((prev) => ({ ...prev, ...data }));
     }, 500),
     []
   );
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     const newFormData = {
       ...formData,

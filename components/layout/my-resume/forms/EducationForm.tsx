@@ -15,7 +15,7 @@ type Education = FormData["education"][number];
 
 const EducationForm = ({ params }: { params: { id: string } }) => {
   const listRef = useRef<HTMLDivElement>(null);
-  const { formData, handleInputChange } = useFormContext();
+  const { formData, handleInputChange, setFormData } = useFormContext();
   const [isLoading, setIsLoading] = useState(false);
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [aiGeneratedDescriptionList, setAiGeneratedDescriptionList] = useState<
@@ -61,12 +61,7 @@ const EducationForm = ({ params }: { params: { id: string } }) => {
     };
     setEducationList(newEntries);
 
-    handleInputChange({
-      target: {
-        name: "education",
-        value: newEntries,
-      },
-    });
+    setFormData({ ...formData, education: newEntries });
   };
 
   const AddNewEducation = () => {
@@ -83,12 +78,7 @@ const EducationForm = ({ params }: { params: { id: string } }) => {
     ];
     setEducationList(newEntries);
 
-    handleInputChange({
-      target: {
-        name: "education",
-        value: newEntries,
-      },
-    });
+    setFormData({ ...formData, education: newEntries });
   };
 
   const RemoveEducation = () => {
@@ -99,12 +89,7 @@ const EducationForm = ({ params }: { params: { id: string } }) => {
       setCurrentAiIndex(newEntries.length - 1);
     }
 
-    handleInputChange({
-      target: {
-        name: "education",
-        value: newEntries,
-      },
-    });
+    setFormData({ ...formData, education: newEntries });
   };
 
   const generateEducationDescriptionFromAI = async (index: number) => {
@@ -147,7 +132,7 @@ const EducationForm = ({ params }: { params: { id: string } }) => {
     }, 100);
   };
 
-  const onSave = async (e: any) => {
+  const onSave = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setIsLoading(true);
