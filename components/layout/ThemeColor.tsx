@@ -30,7 +30,7 @@ const ThemeColor = ({ params }: { params: { id: string } }) => {
         name: "themeColor",
         value: color,
       },
-    });
+    } as any);
 
     const result = await updateResume({
       resumeId: params.id,
