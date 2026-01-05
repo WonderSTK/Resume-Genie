@@ -35,20 +35,29 @@ const SummaryForm = ({ params }: { params: { id: string } }) => {
   };
 
   const generateSummaryFromAI = async () => {
-    setIsAiLoading(true);
+    try {
+      setIsAiLoading(true);
 
-    const result = await generateSummary(formData?.jobTitle || "");
+      const result = await generateSummary(formData?.jobTitle || "");
 
-    setAiGeneratedSummaryList(result);
+      setAiGeneratedSummaryList(result);
 
-    setIsAiLoading(false);
-
-    setTimeout(function () {
-      listRef?.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
+      setTimeout(function () {
+        listRef?.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
+    } catch (error: any) {
+      toast({
+        title: "Failed to generate summary",
+        description: error?.message || "Something went wrong. Please try again.",
+        variant: "destructive",
+        className: "bg-white",
       });
-    }, 100);
+    } finally {
+      setIsAiLoading(false);
+    }
   };
 
   const onSave = async (e: React.FormEvent) => {
